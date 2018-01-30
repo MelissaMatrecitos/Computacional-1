@@ -1,0 +1,193 @@
+\documentclass{article} % Tipo de documento
+\usepackage[utf8]{inputenc} % Permite el uso de caracteres del Español
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+% set font encoding for PDFLaTeX or XeLaTeX
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\fi
+
+% used in maketitle
+\title{Reporte Actividad 1: Atmósfera Terrestre}
+\author{Melissa Matrecitos Avila}
+\date{30 de Enero de 2018}
+
+% Enable SageTeX to run SageMath code right inside this LaTeX file.
+% documentation: http://mirrors.ctan.org/macros/latex/contrib/sagetex/sagetexpackage.pdf
+% \usepackage{sagetex}
+
+\begin{document}
+\maketitle
+
+\section{Introducción}
+El presente trabajo es el reporte correspondiente a la actividad 1 del curso de Física Computacional, el cual es una sítntesis del artículo Atmósfera Terrestre, donde se describen sus principales características, como lo son: composición, estructura, sus propiedades físicas, ópticas y su movimiento.
+Dicho reporte servirá como un acercamiento a LateX, el cual es un sistema de composición de textos cuyo principal objetivo son los textos científicos, en especial aquellos que contienen formulas matemáticas, tablas y cuadros.
+
+
+\section{Sintesís del artículo}
+
+La atmósfera de la Tierra es una capa de gases, conocida comúnmente como aire, que rodea la Tierra y es retenida por la gravedad del planeta. La atmósfera protege la vida en el plantea creando la presión necesaria para permitir la existencia del agua en la superficie terrestre, absorviendo la radiación ultravioleta proveniente del sol, calentando la superficie mediante retención de calor y reduciendo las temperaturas extremas entre el día y la noche.
+ 
+La atmósfera tiene una masa de aproximadamente $5.15$x$10^{18}$kg, ésta se vuelve cada vez más delgada con la altura a la que se encuentra, además no existe un límite definido entre la atmósfera y el espacio exterior, sin embargo, la línea de Kármá, a una altura de 100 km, es considerado recurrentemente como el borde que la separa del espacio exterior.
+
+\subsection{Composición}
+
+\begin{wrapfigure} {l}{0.35\textwidth}
+  \centering
+  \includegraphics[width=0.25\textwidth]{Composicion.png}
+  \caption{Composición de la atmósfera}
+  \label{fig:composicion}
+\end{wrapfigure}
+
+La siguiente imagen muestra, una gráfica de pastel, el porcentaje de cada gas en la atmósfera.
+
+
+Los tres principales componentes de la atmósfera son nitrógeno, oxígeno y argón, mientras que el vapor del agua contribuye con 0.25\% de la masa total.
+Los gases restantes comúnmente se denominan gases traza, entre los que se encuentran los gases de efecto invernadero, principalmente dióxido de carbono, metano, óxido nitroso y ozono. El aire filtrado incluye trazas de muchos otros compuestos químicos.
+
+\begin{wrapfigure} {r}{0.35\textwidth}
+  \centering
+  \includegraphics[width=0.5\textwidth]{Estrectura.png}
+  \caption{Capas principales de la atmósfera}
+  \label{fig:estructura}
+\end{wrapfigure}
+
+
+
+\subsection{Estructura}
+
+La presión del aire y la densidad disminuyen con la altitud en la atmósfera. Sin embargo, la temperatura tiene un perfil más complicado con la altitud, y puede permanecer relativamente constante o incluso aumentar con la altitud en algunas regiones. Debido a que el patrón general del perfil de temperatura / altitud es constante y medible por medio de sondeos de globo instrumentados, el comportamiento de la temperatura proporciona una medida útil para distinguir las capas atmosféricas. De esta manera, la atmósfera de la Tierra se puede dividir en cinco capas principales, las cuales son:
+
+\subsubsection {Tropósfera: 0 a 12 km}
+La troposfera contiene aproximadamente el 80\% de la masa de la atmósfera de la Tierra. Casi todo el vapor de agua atmosférico o humedad se encuentra en esta capa, por lo que es ahí donde tiene lugar la mayor parte del clima de la Tierra.
+
+\subsubsection {Estratósfera: 12 a 50 km}
+Contiene la capa de ozono, que es la parte de la atmósfera de la Tierra que contiene concentraciones relativamente altas de ese gas. La estratosfera define una capa en la que las temperaturas aumentan con el aumento de la altitud. Este aumento de la temperatura es causado por la absorción de la radiación ultravioleta (UV) del Sol por la capa de ozono.
+
+\subsubsection {Mesósfera: 50 a 80 km}
+Es la capa donde la mayoría de los meteoros se queman al entrar en la atmósfera. Está demasiado elevado sobre la Tierra para que sea accesible para aviones y globos propulsados por aviones a reacción, y demasiado bajo para permitir naves espaciales orbitales.
+
+\subsubsection {Termósfera: de 80 a 700 km}
+Esta capa está completamente despejada y libre de vapor de agua. Sin embargo, fenómenos no hidrometeorológicos como la aurora boreal y la aurora austral se ven ocasionalmente en la dicha capa. La Estación Espacial Internacional orbita en esta capa, entre 350 y 420 km.
+
+
+\subsubsection {Exosfera: 700 a 10,000 km }
+Esta capa está compuesta principalmente de densidades extremadamente bajas de hidrógeno, helio y varias moléculas más pesadas, incluyendo nitrógeno, oxígeno y dióxido de carbono. Los átomos y las moléculas están tan separados que pueden viajar cientos de kilómetros sin colisionar entre sí.
+
+\begin{wrapfigure} {l!}{0.35\textwidth}
+  \centering
+  \includegraphics[width=0.3\textwidth]{Atmosfera.jpg}
+  \caption{Atmósfera de la Tierra}
+  \label{fig:atmósfera}
+\end{wrapfigure}
+
+\subsection{Propiedades físicas}
+
+\subsubsection {Presión y espesor}
+La presión atmosférica promedio a nivel del mar está definida por la Atmósfera Estándar Internacional como 101325 pascales. A medida que aumenta la elevación, hay menos masa atmosférica suprayacente, por lo que la presión atmosférica disminuye al aumentar la elevación.
+ 
+Aunque la atmósfera no posee un límite superior claramente definido, los científicos consideran generalmente que tiene un espesor de unos 480 kilómetros. Por encima de esa altitud, los gases enrarecidos de la atmósfera se diluyen imperceptiblemente con el casi vacío del espacio exterior.
+
+\subsubsection {Temperatura y velocidad del sonido}
+La temperatura disminuye con la altitud comenzando al nivel del mar, pero las variaciones en esta tendencia comienzan por encima de los 11 km, donde la temperatura se estabiliza a través de una gran distancia vertical a través del resto de la tropósfera.
+
+la velocidad del sonido en la atmósfera con la altitud adquiere la forma del perfil de temperatura complicado y no refleja los cambios altitudinales en densidad o presión.
+
+
+\subsubsection {Densidad y masa}
+La densidad del aire a nivel del mar es de aproximadamente 1.2 kg / $m^{3}$ .La densidad no se mide directamente, pero se calcula a partir de mediciones de temperatura, presión y humedad utilizando la ecuación de estado para el aire. La densidad atmosférica disminuye a medida que aumenta la altitud. Esta variación se puede modelar aproximadamente utilizando la fórmula barométrica.
+
+La masa media total de la atmósfera es $5.1480$ x $10^{18}$ kg con un rango anual debido al vapor de agua de 1.2 o 1.5 x $10^{15}$ kg. La masa de la atmósfera de la Tierra se distribuye aproximadamente de la siguiente manera: 
+\begin{enumerate}
+\item 50\% está por debajo de 5.6 km (18,000 pies).
+\item 90\% está por debajo de 16 km (52,000 pies).
+\item 99.99997\% está por debajo de 100 km (62 mi; 330,000 pies), la línea Kármán. 
+\end{enumerate}
+
+\subsection{Propiedades ópticas}
+\begin{wrapfigure} {r!}{0.35\textwidth}
+  \centering
+  \includegraphics[width=0.25\textwidth]{aurora.jpg}
+  \caption{Aurora Boreal}
+  \label{fig:aurora}
+\end{wrapfigure}
+La Tierra emite radiación hacia el espacio, pero a longitudes de onda más largas que no podemos ver. Parte de la radiación entrante (solar) y emitida es absorbida o reflejada por la atmósfera. En mayo de 2017, se descubrió que los reflejos de luz de los cristales de hielo en la atmósfera reflejaban destellos de luz, que se veían centellear desde un satélite en órbita a un millón de millas de distancia.
+\begin{itemize}
+\item Dispersión: 
+Cuando la luz pasa a través de la atmósfera de la Tierra, los fotones interactúan con ella a través de la dispersión. La radiación indirecta es luz que se ha dispersado en la atmósfera.
+\item Absorción: 
+Diferentes moléculas, como las que se encuentran en os distintos gases que forman la atmósfera, absorben diferentes longitudes de onda de radiación. Los espectros de absorción combinados de los gases en la atmósfera dejan "ventanas" de baja opacidad, permitiendo la transmisión de solo ciertas bandas de luz. La ventana óptica se extiende desde alrededor de 300 nm (ultravioleta-C) hasta el rango que los humanos pueden ver, el espectro visible (comúnmente llamado luz), a aproximadamente 400-700 nm y continúa al infrarrojo a alrededor de 1100 nm.
+\item Emisión: Debido a su temperatura, la atmósfera emite radiación infrarroja. Por ejemplo, en las noches despejadas, la superficie de la Tierra se enfría más rápido que en las noches nubladas. Esto se debe a que las nubes  son fuertes absorbentes y emisores de radiación infrarroja.
+
+El efecto invernadero está directamente relacionado con este efecto de absorción y emisión. Algunos gases en la atmósfera absorben y emiten radiación infrarroja, pero no interactúan con la luz solar en el espectro visible.
+\item Índice de refracción :El índice de refracción del aire depende de la temperatura, dando lugar a efectos de refracción cuando el gradiente de temperatura es grande. Un ejemplo de tales efectos es el espejismo.
+\end{itemize}
+
+\subsection{Movimiento}
+La circulación atmosférica es el movimiento de aire a gran escala a través de la troposfera, y los medios por los cuales se distribuye el calor alrededor de la Tierra. La estructura a gran escala de la circulación atmosférica varía de un año a otro, pero la estructura básica permanece bastante constante porque está determinada por la velocidad de rotación de la Tierra y la diferencia en la radiación solar entre el ecuador y los polos.
+
+La circulación atmosférica se puede ver como un motor térmico impulsado por la energía del Sol, y cuyo sumidero de energía, en última instancia, es la negrura del espacio. El trabajo producido por ese motor causa el movimiento de las masas de aire y en ese proceso redistribuye la energía absorbida por la superficie de la Tierra cerca de los trópicos al espacio e incidentalmente a las latitudes más cercanas a los polos.
+
+\section{Bibliografía}
+Articulos
+\begin{itemize}
+
+\item Composition of Earth's atmosphere es.svg. (n.d.).Recuperado el Enero 28, 2018, en \url{https://commons.wikimedia.org/wiki/File:Composition_of_Earth%27s_atmosphere_es.svg}
+\item LaTeX - EcuRed. (2018). Ecured.cu. Recuperado el 30 Enero 2018, en \url{https://www.ecured.cu/LaTeX}
+\item Speed of sound. (2018). En.wikipedia.org. Recuperado el 28 Enero 2018, de \url{https://en.wikipedia.org/wiki/Speed_of_sound}
+ \item Atmospheric pressure. (2018). En.wikipedia.org. Recuperado el 28 Enero 2018, de \url{https://en.wikipedia.org/wiki/Atmospheric_pressure}
+\item Atmospheric circulation. (2018). En.wikipedia.org. Recuperado el 28 Enero 2018, de \url{https://en.wikipedia.org/wiki/Atmospheric_circulation}
+\item Selecciones, R. (2018). El espesor de la atmósfera. Selecciones. recuperado el 27 Enero 2018, de \url{https://ar.selecciones.com/contenido/a2052_el-espesor-de-la-atmosfera}
+\item Atmosphere of Earth. (2018). En.wikipedia.org. Recuperado el 28 Enero 2018, de \url{https://en.wikipedia.org/wiki/Atmosphere_of_Earth}
+
+\end{itemize}
+
+Imágenes
+
+\begin{itemize}
+\item Visit Greenland. (2017). Aurora Boreal. Recuperado de \url{https://pixnio.com/es/paisajes/noche/aurora-boreal-la-astronomia-atmosfera-fenomeno-planeta-majestuoso-cielo-noche}
+
+\item Kelvinsong. (2013). Prisma triangular daire. Recuperado de  \url{https://commons.wikimedia.org/wiki/File:Atm\%C3\%B3sfera.svg}
+
+\item PXHERE. (2018). Atmósfera Terrestre. Recuperado de \url{https://pxhere.com/es/photo/843990}
+
+\item Composición de la atmósfera terrestre. (2014). Recuperado de  \url{https://commons.wikimedia.org/wiki/File:Composition_of_Earth%27s_atmosphere_es.svg}
+
+\end{itemize}
+
+\section{Apéndice}
+\begin{enumerate}
+\item¿Qué fue lo que más te llamó la atención de esta actividad?
+
+Aprender una nueva forma de escribir documentos de cualquier tipo, en especial de carácter científico.
+
+\item¿Qué fue lo que se te hizo menos interesante?
+
+Todo me pareció interesante ya que fue algo nuevo para mi.
+
+\item¿Qué cambios harías para mejorar esta actividad?
+
+Me gustaría que el tema sobre el cual se realizará la síntesis sea libre.
+
+\item¿Cuál es tu primera impresión de uso de LATEX?
+
+Al principio me costó mucho trabajo ordenar el documento, sobre todo por que los editores con los que había trabajo antes son muy distintos a LaTeX, pero considero que con práctica cada vez será más sencillo.
+
+\item¿El tiempo sugerido para esta actividad fue suficiente? 
+
+Sí, ya que el fin de semana me dio oportunidad de avanzar en el trabajo.
+
+\item¿Encontraste algún documento o recurso en línea útil que quisieras compartir con los demás?
+
+La información extra que cosulté fueron de fuentes que mis compañeros me compartieron.
+\end{enumerate}
+
+\end{document}
