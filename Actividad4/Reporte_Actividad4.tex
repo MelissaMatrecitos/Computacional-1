@@ -1,0 +1,255 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc} % Permite el uso de caracteres del Español
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+
+% set font encoding for PDFLaTeX or XeLaTeX
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\fi
+
+% used in maketitle
+\title{Actividad 4: Introducción a la programación de los intérpretes de comandos}
+\author{Melissa Matrecitos Avila}
+\date{21 de Febrero de 2018}
+
+% Enable SageTeX to run SageMath code right inside this LaTeX file.
+% documentation: http://mirrors.ctan.org/macros/latex/contrib/sagetex/sagetexpackage.pdf
+% \usepackage{sagetex}
+
+\begin{document}
+\maketitle
+
+\section{Introducción}
+El siguiente texto es el reporte de la actividad 4 del curso de Física Computacional 1, en la cual se trabajó con un interprete de comandos llamado Shell, el es una interfaz de usuario para acceder a los servicios de un sistema operativo, en este caso LINUX.
+
+En esta actividad trabajamos las distintas formas de interactuar y hacer scripts (programas) con el Shell (/bin/sh) y el  Again Shell (/bin/bash). Para llevarla a cabo se utilizaron los comandos cat, chmod, echo, grep, less, ls y wc, los cuales se explicaran en los resultados de la práctica.
+
+Por último se realizó una síntesis sobre las notas de Steve Parker "Shell Script Tutorial", de los cuales se incluyen ejemplos de las secciones que allí vienen.
+
+\section{Síntesis}
+En esta sección se presentará la sítesis sobre las notas de Steve Parker "Shell Script Tutorial" con algunos ejemplos.
+\subsection{Introducción y Filosofía}
+Este tutorial está escrito para ayudar a las personas a comprender algunos de los conceptos básicos de la programación de scripts de shell.
+Hay una serie de factores que pueden incluirse en scripts de shell buenos, limpios y rápidos.
+\begin{itemize}
+\item Los criterios más importantes deben ser un diseño claro y legible.
+\item La segunda es evitar comandos innecesarios.
+\end{itemize}
+Un diseño claro hace la diferencia entre un guión de shell que aparece como "magia negra" y uno que se mantiene y comprende fácilmente.
+\subsection{Un Primer Script}
+Para el primer script se escribirá uno que diga "Hello World", esto se logra, primero que nada especificando por quien debe ser ejecutado el script y con el comando echo se escribe en la pantalla los argumentos que lo acompañan. Es importante saber que echo pondrá automáticamente un espacio entre los argumentos, para evitarlo, el argumento se debe escribir entre comillas, otra cosa importante es saber que el símbolo  \# es para agregar comentarios, excepto cuando es acompañado de ! ya que \#! significa que lo que sigue debe ser interpretado por el shell de Bourne.
+
+\begin{verbatim}
+#!/bin/bash
+#Comentario
+echo Hello World
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+#Comentario
+echo"Hola    Mundo"
+\end{verbatim}
+
+\subsection{Variables}
+Casi todos los lenguajes de programación existentes tienen el concepto de variables , un nombre simbólico para un trozo de memoria al que podemos asignar valores, leer y manipular sus contenidos.
+Tenga en cuenta que no debe haber espacios alrededor del signo "=", el cual tarta el comando como una asignación de variable.
+
+Al shell no le importan los tipos de variables; pueden almacenar cadenas, enteros, números reales, cualquier cosa que te guste. Podemos establecer de manera interactiva nombres de variables usando el readcomando.
+
+No es necesario declarar las variables en el shell Bourne, como sí lo hacen en lenguajes como C. Pero si intenta leer una variable no declarada, el resultado es la cadena vacía. No obtienes advertencias o errores.
+
+\begin{verbatim}
+#!/bin/bash
+echo "Hola, ¿Cómo te llamas?"
+read Nombre
+echo "¿Cuál es tu color favorito, $Nombre?"
+read Color
+echo "El color favorito de $Nombre es $Color"
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+echo "Hola, para saber el año en el que naciste escribe el año actual:"
+read Actual
+echo "¿Cuál será tu edad este año?"
+read Edad
+echo "El año en que naciste es"
+expr $Actual-$Edad
+\end{verbatim}
+
+\subsection{Comodines}
+Los comodines no son muy útiles en los scripts de shell. Esta sección es realmente solo para mover y editar archivos en la terminal. Son más utilizados cuando hay ciclos.
+\begin{verbatim}
+#!/bin/bash
+#Copiar archivos de a hacía b
+cp / tmp / a / * / tmp / b /
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+#Escribir lo que contiene la carpeta a
+echo /tmp/a/*
+\end{verbatim}
+
+\subsection{Caracteres de Escape}
+La mayoría de los caracteres ( *, ', etc) no se interpretan (es decir, que se toman literalmente)  a menos de que sean colocados entre comillas dobles (""). Pero para los caracteres ", $, `, y \ siguen siendo interpretado cómo código a pesar de las comillas, para esto se utiliza caracter de barra invertida (\) el cual hace que el intérprete no los interprete, sino que los pase al comando que se esta utilizando.
+
+\begin{verbatim}
+#!/bin/bash
+echo "Tienes que pagar \$ 10. "
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+echo "Mi nombre es \"Melissa\" "
+\end{verbatim}
+
+\subsection{Ciclos}
+La mayoría de los lenguajes tienen el concepto de bucles: si queremos repetir una tarea veinte veces, no queremos tener que escribir el código veinte veces, con un ligero cambio cada vez.
+Como resultado, tenemos fory whilebucles en el shell Bourne.
+
+Los bucles "for" iteran a través de un conjunto de valores hasta que se agote la lista:
+\begin{verbatim}
+#!/bin/bash
+for i in 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+do
+  echo "Summer"
+done
+  echo"What time is it ? Summertime!"
+\end{verbatim}
+
+Los bucles "while" iteran hasta que se cumpla una condición de salida, éste tipo de bucles se dice que son más "divertidos" debido a que el usuario decide si va a seguir dentro o va a salir del ciclo:
+\begin{verbatim}
+#!/bin/bash
+salida=Halo
+while [ "$salida" != "Tschüss" ]
+do
+  echo "Escribe algo (Tschüss para salir)"
+  read salida
+  echo "Escribiste: $salida"
+done
+\end{verbatim}
+
+
+\section{Resultados de la práctica}
+A continuación se describirá la practica realizada:
+Después de crear la carpeta "Actividad 4"en la cual se guardarían todos los archivos utilizados, se decargó el archivo proporcionado por el profesor llamado "script1.sh", en el cual se hicieron los cambios pertinentes para descargar los datos de la estación 10393, correspondiente a Linderburg en Alemania. Después con el comando \textbf{''chmod''} se creó el ejecutable de dicho script que se confirmo utilizando el comando \textbf{''ls -alg''}, que después se ejecutó en la terminal. Los 12 archivos descargados fueron:
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{archivosdescargados.png}
+
+ Archivos descargados por el script1.sh
+\end{center}
+
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{chmod.png}
+
+Comandos "chmod" y "ls-alg" en la terminal
+
+\end{center}
+
+Posteriormente con el comando \textbf{"less"} se exploró el archivo correspondiente al mes de febrero, este mostró el archivo en la terminal, ubicando el puntero al inicio del archivo:
+
+\begin{center}
+
+ \includegraphics[width=0.99\textwidth]{less2.PNG}
+ \includegraphics[width=0.8\textwidth]{less1.png}
+
+Comando less
+
+\end{center}
+
+Siguiendo con la actividad se utilizó el comando \textbf{"cat"} par explorar un archivo, a diferencia del less, este te mostraba rapidámente el archivo y dejaba el puntero al final del archivo:
+\begin{center}
+ \includegraphics[width=1\textwidth]{cat1.PNG}
+ \includegraphics[width=0.8\textwidth]{cat2.png}
+
+Comando cat
+
+\end{center}
+
+Otro comando utilizado fue el \textbf{"echo"}, el cual sirvió para escribir texto en un archivo, en este caso el archivo "file1":
+
+\begin{center}
+ \includegraphics[width=1\textwidth]{echo.png}
+
+Comando echo
+
+\end{center}
+
+También se utilizó el comando\textbf{"wc"}, con este contamos las palabras de un archivo:
+\begin{center}
+ \includegraphics[width=1\textwidth]{wc.png}
+
+Comando wc
+
+\end{center}
+
+Después se hizo uso del comando \textbf["grep"], el cual sirve para extraer información específica de los archivos. También se utilizó el comando \textbf{"file"} para para verificar que los archivos descargados fueran tipo ASCII.
+Posteriormente se utilizó la instrucción:
+\begin{verbatim} cat sounding* > sondeos.txt
+\end{verbatim}
+para almacenar los 12 archivos descargados en unos solo de nombre sondeos, aquí el redirector \textbf{">"} sirvió para enviar los 12 archivos al archivo nuevo, siguiendo con la practica se volvió a utilizar comando grep, luego se utilizó la siguiente entrada:
+\begin{verbatim}
+egrep -v 'PRES|hPa' sondeos.txt | egrep '10393|Showalter|LIFT|SWEAT|K|Totals|CAPE|CINS|LFCT|CAPV|Temp|Pres|thick|Precip' > df2017.csv
+\end{verbatim}
+la cual, selecciona solamente los renglones especificados, los cuales están separados por el rediccionador \textbf{"|"}, guardandolos en un archivo llamado "df2017.csv".
+\begin{center}
+ \includegraphics[width=1\textwidth]{egrep.png}
+
+\end{center}
+ Para automatizar el proceso anterior, se procedió a crear un script con los dos ultimos comandos utilizados, crear su ejecutable y ejecutarlo, solo "df2017.csv", fue enviado a "df2017-2.csv":
+ \begin{center}
+ \includegraphics[width=0.8\textwidth]{egrepa.png}
+\includegraphics[width=0.8\textwidth]{egrepa2.png}
+\end{center}
+
+Por último se nos pidióo comparar estos dos archivos, lo cual se hizo con el comando \textbf{"diff"} y no se encontraron diferencias:
+ \begin{center}
+ \includegraphics[width=1\textwidth]{diff.png}
+
+\end{center}
+
+\section{Conclusión}
+Al inció de la actividad me pareció muy complicado entender que era lo que estábamos haciendo, pero conforme fui avanzando las dudas se resolvieron, descubriendo así muchas herramientas que ayudan en la optimización de procesos, sobre todo aquellos donde se tienen que trabajar con muchos datos.
+\section{Bibliografía}
+\begin{itemize}
+\item Shell (computing). (2018). En.wikipedia.org. Recuperado el 20 Febrero 2018, de \url{https://en.wikipedia.org/wiki/Shell_(computing)}
+\item Parker, S. (2017). Shell Scripting Tutorial. Shellscript.sh. Recuperado el 21 Febrero 2018, de \url{https://www.shellscript.sh/index.html}
+\item Atmospheric Soundings. (2018). Weather.uwyo.edu. Recuperado el 21 Febrero 2018,de \url{http://weather.uwyo.edu/upperair/sounding.html}
+\end {itemize}
+
+\section{Apendice}
+\begin{enumerate}
+\item¿Qué fue lo que más te llamó la atención en esta actividad?
+
+La manera tan sencilla en que se pueden automatizar procesos que manejan gran cantidad de datos  ya que solo conocía comandos muy básicos.
+
+\item¿Qué consideras que aprendiste?
+
+Como automatizar procesos por medio de scripts, así como los comandos que estos utilizan.
+
+\item¿Cuáles fueron las cosas que más se te dificultaron?
+
+Al inicio batallé mucho para saber que era lo que estaba haciendo, ya que no sabía para que eran los comandos. Creo que esto se debe a que un nuevo "lenguaje".
+
+\item¿Cómo se podría mejorar en esta actividad?
+
+Me hubiera gustado una introducción teórica a lo que íbamos  hacer, para no estar tan perdida y así poder agilizar el desarrollo de la actividad.
+
+\item¿En general, cómo te sentiste al realizar en esta actividad?
+
+Al inicio estaba muy confundida, pero al final me gustó mucho todo lo que hicimos.
+
+\end{enumerate}
+
+\end{document}
