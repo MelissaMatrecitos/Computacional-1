@@ -19,7 +19,7 @@
 % used in maketitle
 \title{Actividad 4: Introducción a la programación de los intérpretes de comandos}
 \author{Melissa Matrecitos Avila}
-\date{21 de Febrero de 2018}
+\date{26 de Febrero de 2018}
 
 % Enable SageTeX to run SageMath code right inside this LaTeX file.
 % documentation: http://mirrors.ctan.org/macros/latex/contrib/sagetex/sagetexpackage.pdf
@@ -60,7 +60,7 @@ echo Hello World
 echo"Hola    Mundo"
 \end{verbatim}
 
-\subsection{Variables}
+\subsection{Variables Parte 1}
 Casi todos los lenguajes de programación existentes tienen el concepto de variables , un nombre simbólico para un trozo de memoria al que podemos asignar valores, leer y manipular sus contenidos.
 Tenga en cuenta que no debe haber espacios alrededor del signo "=", el cual tarta el comando como una asignación de variable.
 
@@ -139,6 +139,225 @@ do
   echo "Escribiste: $salida"
 done
 \end{verbatim}
+
+\subsection{Prueba (test)}
+\textbf{"["} es un enlace simbólico de test, solo para hacer que los programas shell sean más legibles. Esto significa que "test" es en realidad un programa, al igual que ls u otros programas. 
+Test a menudo se invoca indirectamente a través de las instrucciones if y while. También es la razón por la que tendrás problemas si creas un programa llamado testy tratas de ejecutarlo, ya que se llamará a este intérprete de comandos en lugar de tu programa.
+\begin{verbatim}
+#!/bin/bash
+echo -en "Please guess the magic number: "
+read X
+echo $X | grep "[^0-9]" > /dev/null 2>&1
+if [ "$?" -eq "0" ]; then
+  # If the grep found something other than 0-9
+  # then it's not an integer.
+  echo "Sorry, wanted a number"
+else
+  # The grep found only 0-9, so it's an integer.
+  # We can safely do a test on it.
+  if [ "$X" -eq "7" ]; then
+    echo "You entered the magic number!"
+  fi
+fi
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+X=0
+while [ -n "$X" ]
+do
+  echo "Enter some text (RETURN to quit)"
+  read X
+  if [ -n "$X" ]; then
+    echo "You said: $X"
+  fi
+done
+\end{verbatim}
+
+\subsection{Caso}
+La "case" declaración guarda pasar por un conjunto completo de if .. then .. else declaraciones. Pueden ser una herramienta muy útil y poderosa. A menudo se utilizan para analizar los parámetros pasados a un script de shell, entre otros usos.
+\begin{verbatim}
+#!/bin/bash
+echo "Please talk to me ..."
+while :
+do
+  read INPUT_STRING
+  case $INPUT_STRING in
+	hello)
+		echo "Hello yourself!"
+		;;
+	bye)
+		echo "See you again!"
+		break
+		;;
+	*)
+		echo "Sorry, I don't understand"
+		;;
+  esac
+done
+echo
+echo "That's all folks!"
+\end{verbatim}
+
+\subsection{Variables Parte 2}
+Ya hay un conjunto de variables establecidas para usted, y la mayoría de ellas no pueden tener valores asignados. 
+Estos pueden contener información útil, que el script puede utilizar para conocer el entorno en el que se está ejecutando. 
+El primer conjunto de variables que veremos son \$0 .. \$9 y \$\#. 
+La variable \$0 es el nombre base del programa como se lo llamó. 
+\$1 .. \$9 son los primeros 9 parámetros adicionales con los que se invocó el script. 
+
+La variable \$@ es todos los parámetros \$1 .. cualquiera. La variable \$*, es similar, pero no conserva ningún espacio en blanco, y las comillas, por lo que "Archivo con espacios" se convierte en "Archivo" "con" "espacios". Como regla general, usa \$@y evita \$*. 
+
+\$\# es la cantidad de parámetros con los que se invocó el script.
+Otra variable es interesante IFS. Este es el separador de campo interno . El valor predeterminado es SPACE TAB NEWLINE, pero si lo está cambiando, es más fácil tomar una copia
+Otra variable especial es \$?. Esto contiene el valor de salida del último comando de ejecución, esto ayuda a que los scripts sean robustos y más inteligentes.
+\begin{verbatim}
+#!/bin/bash
+old_IFS="$IFS"
+IFS=:
+echo "Please input some data separated by colons ..."
+read x y z
+IFS=$old_IFS
+echo "x is $x y is $y z is $z"
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+/usr/local/bin/my-command
+if [ "$?" -ne "0" ]; then
+  echo "Sorry, we had a problem there!"
+fi
+\end{verbatim}
+
+\subsection{Variables Parte 3}
+Como mencionamos en Variables - Parte I , las llaves alrededor de una variable evitan confusiones. Sin embargo, eso no es todo, estos brackets de lujo tienen otro uso mucho más poderoso. Podemos tratar con problemas de variables indefinidas o nulas.
+\begin{verbatim}
+#!/bin/bash
+foo=sun
+echo $fooshine     # $fooshine is undefined
+echo ${foo}shine   # displays the word "sunshine"
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+echo -en "What is your name [ `whoami` ] "
+read myname
+if [ -z "$myname" ]; then
+  myname=`whoami`
+fi
+echo "Your name is : $myname"
+\end{verbatim}
+
+\subsection{Programas externos}
+Los programas externos a menudo se usan en scripts de shell; hay algunas órdenes internas ( echo, which, y test son comúnmente incorporados), pero muchos comandos útiles son en realidad utilidades Unix, tales como tr, grep, expry cut. El backtick (`) también se asocia a menudo con comandos externos, se usa para indicar que el texto adjunto se debe ejecutar como un comando.
+\begin{verbatim}
+#!/bin/bash
+grep "^${USER}:" /etc/passwd | cut -d: -f5
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+MYNAME=`grep "^${USER}:" /etc/passwd | cut -d: -f5`
+echo $MYNAME
+\end{verbatim}
+
+\subsection{Funciones}
+Una característica que a menudo se pasa por alto de la programación de guiones de shell de Bourne es que puede escribir fácilmente funciones para usar en su secuencia de comandos. Esto generalmente se hace de una de dos maneras; con un script simple, la función simplemente se declara en el mismo archivo como se llama. 
+Sin embargo, al escribir un conjunto de secuencias de comandos, a menudo es más fácil escribir una "biblioteca" de funciones útiles, y el origen de ese archivo al inicio de los otros scripts que utilizan las funciones.
+Una función puede devolver un valor en una de cuatro formas diferentes:
+\begin{itemize}
+\item Cambiar el estado de una variable o variables
+\item Use el exit comando para finalizar el script de shell
+\item Utilice el return comando para finalizar la función y devolver el valor proporcionado a la sección de llamada del script de shell
+\item echo output to stdout, que será capturado por la persona que lo llama al igual que c=`expr \$ a + \$ b` es llamado.
+\end{itemize}
+La diferencia es que una función de shell no puede cambiar sus parámetros, aunque puede cambiar los parámetros globales.
+\begin{verbatim}
+#!/bin/bash
+
+myfunc()
+{
+  echo "I was called as : $@"
+  x=2
+}
+
+### Main script starts here
+
+echo "Script was called with $@"
+x=1
+echo "x is $x"
+myfunc 1 2 3
+echo "x is $x"
+\end{verbatim}
+\begin{verbatim}
+#!/bin/bash
+
+factorial()
+{
+  if [ "$1" -gt "1" ]; then
+    i=`expr $1 - 1`
+    j=`factorial $i`
+    k=`expr $1 \* $j`
+    echo $k
+  else
+    echo 1
+  fi
+}
+
+
+while :
+do
+  echo "Enter a number:"
+  read x
+  factorial $x
+done
+\end{verbatim}
+
+\subsection{Consejos y Sugerencias}
+En esta sección, cómo lo dice su título, se nos brindan algunas sugerencias o tips sobre como mejorar los scrpits, como los dos ejemplos que se muestran a continuación:
+
+\begin{verbatim}
+#!/bin/bash
+steves = `grep -i steve / etc / passwd | cut -d: -f1` 
+echo "Todos los usuarios con la palabra" steve "en su passwd" 
+echo "Las entradas son:" 
+echo "$ steves" | tr '' '\ 012'
+\end{verbatim}
+
+\begin{verbatim}
+#!/bin/bash
+NO_LINES = `wc -l archivo | awk '{print $ 1}' `
+\end{verbatim}
+
+Se les dio mayor importancia a los que eran de tipo:
+\begin{itemize}
+\item CGI Scripting
+
+\item Códigos de salida y control de flujo
+
+\item Simple esperar reemplazo
+
+\item Usar la trampa para saber cuándo te han interrumpido, como CTRL-C, etc.
+
+\item Solución para la dicotomía 'echo -n' versus 'echo \ c'
+\end{itemize}
+
+\subsection{Referencia Rápida}
+Se muestra una guía de referencia rápida sobre el significado de algunos de los comandos y códigos menos fáciles de adivinar de los scripts de shell. Por su naturaleza, también son bastante difíciles de encontrar usando los motores de búsqueda.
+\begin{center}
+ \includegraphics[width=1\textwidth]{referencias.PNG}
+\end{center}
+
+
+\subsection{Shell Interactivo}
+Aquí hay algunas sugerencias rápidas para usar el shell UNIX o Linux de forma interactiva.
+
+\begin{itemize}
+\item bash:
+tiene algunas herramientas de búsqueda de historia muy prácticas; las teclas de flecha hacia arriba y hacia abajo se desplazarán por el historial de comandos anteriores. Más útilmente, Ctrl + r hará una búsqueda inversa, haciendo coincidir cualquier parte de la línea de comando. Presione ESC y el comando seleccionado se pegará en el shell actual para que pueda editarlo según sea necesario.
+\item ksh:
+Puede hacer que ksh sea más útil agregando comandos de historial, ya sea en vi o emacs. Hay varias maneras de hacerlo, dependiendo de las circunstancias exactas: "set -o vi", o "ksh -o vi", o "exec ksh -o vi" (donde "vi" podría reemplazarse por "emacs" si prefiere el modo emacs). Además si golpeas ESC y k, al golpear repetidamente k, retrocedes en el historial de comandos. Puede usar los comandos vi command-mode y entry-mode para editar los comandos.
+\end{itemize} 
 
 
 \section{Resultados de la práctica}
