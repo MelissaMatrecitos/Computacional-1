@@ -1,0 +1,282 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc} % Permite el uso de caracteres del Español
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+
+% Para ecuaciones
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{upgreek} % para poner letras griegas sin cursiva
+\usepackage{cancel} % para tachar
+\usepackage{mathdots} % para el comando \iddots
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{stackrel} % para el comando \stackbin
+
+% set font encoding for PDFLaTeX or XeLaTeX
+\usepackage{ifxetex}
+\ifxetex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\fi
+
+% used in maketitle
+\title{Actividad 7:\\ Sistema de resortes acoplados}
+\author{Melissa Matrecitos Avila}
+\date{28 de Marzo de 2018}
+
+% Enable SageTeX to run SageMath code right inside this LaTeX file.
+% documentation: http://mirrors.ctan.org/macros/latex/contrib/sagetex/sagetexpackage.pdf
+% \usepackage{sagetex}
+
+\begin{document}
+\maketitle
+\section{Introducción}
+El siguiente reporte corresponde a la actividad 7 del curso de Física Computacional 1, en la cual se estudió la modelación de fenómenos físicos, apoyados con Python, en especial con un sistema de resortes acoplados. Esto se logro mediante la aplicación de métodos numéricos, realizando las gráficas los resultados y comparando. cuando era posible, con la solución exacta.
+
+EL reporte presenta una síntesis del artículo completo "Coupled spring equations" de  Temple H. Fay y Sarah Duncan Graham junto con las secciones de código utilizadas para resolver el problema numericamente. También se incluye la comparación de los resultados numéricos con los exactos mediante la gráfica del error relativo. Por último se presentan las secciones de conclusión, bibliografía y apéndice.
+
+\section{Síntesis}
+\subsection{Introducción}
+El estudio clásico de las ecuaciones diferenciales está cambiando rápidamente, esto se debe en particular a la amplia disponibilidad de algoritmos numéricos de alta potencia y capacidades gráficas con un énfasis en las ecuaciones no lineales
+
+En este artículo, se investiga el viejo problema de dos resortes y dos pesos unidos en serie, colgando del techo. Bajo la suposición de que las fuerzas de restauración se comportan de acuerdo con la Ley de Hooke, este problema de dos grados de libertad se modela mediante un par de ecuaciones diferenciales lineales de segundo orden acopladas. Al diferenciar y sustituir una ecuación por otra, el movimiento de cada peso se puede demostrar que está determinado por una ecuación diferencial lineal de cuarto orden.
+
+Con las ecuaciones mencionadas se pueden estudiar algunos fenómenos más sobresalientes de este tipo de movimientos, como lo son la periodicidad, la amplitud, la fase, la sensibilidad a las condiciones iniciales y muchos otros conceptos, tan solo modificando los parámetros en el modelo.
+
+\subsection{El modelo de resorte acoplado}
+\begin{wrapfigure} {l}{0.3\textwidth}
+  \centering
+  \includegraphics[width=0.25\textwidth]{SistemaResortes.PNG}
+\end{wrapfigure}
+El modelo consiste en dos resortes y dos pesos. Un resorte con constante $k_{1}$, está unido al techo y un peso de masa $m_{1}$ está unido al extremo inferior de este resorte. A este peso, se une un segundo resorte con una constante de resorte $k_{2}$. En la parte inferior de este segundo resorte, se adjunta un peso de masa $m_{2}$.
+
+Considerando el sistema desde el equilibrio, medimos el desplazamiento del centro de masa de cada peso como una función del tiempo, y denotamos estas medidas por x1 (t) y x2 (t), respectivamente.
+
+\subsubsection{Asumiendo la Ley de Hooke}
+Bajo la suposición de pequeñas oscilaciones, las fuerzas de restauración son de la forma $-k_{1}l_{1}$ y $-k_{2}l_{2}$ donde $l_{1}$ y $l_{2}$ son los alargamientos (o compresiones) de los dos resortes.
+
+Dado que la masa superior está unida a ambos resortes, hay dos fuerzas de restauración que actúan sobre ella: una fuerza de restauración hacia arriba $k1l1$ ejercida por el alargamiento (o compresión) $x1$ del primer resorte; una fuerza hacia arriba $k_{2}(x_{2}-x1)$ desde la resistencia del segundo muelle a ser alargada (o comprimida) en la cantidad $x_{2}-x1$. La segunda masa solo "siente" la fuerza de restauración desde el alargamiento (o compresión) del segundo resorte. Si asumimos que no hay fuerzas de amortiguamiento presentes, entonces la Ley de Newton implica que las dos ecuaciones que representan los movimientos de los dos pesos son:
+
+\begin{center}
+$m_{1}\ddot{x_{1}}=-k_{1}x_{1}-k_{2}(x_{1}-x_{2})$
+\end{center}
+\begin{center}
+$m_{2}\ddot{x_{2}}=-k_{2}(x_{2}-x_{1})$
+\end{center}
+
+Para encontrar una ecuación para $x_{1}$ y $x_{2}$ que no dependan una de la otra, se resuelve la ecuación de $x_{2}$ y se sustituye en la de $x_{1}$, obteniendo las ecuaciones:
+\begin{center}
+$m_{1}m_{2}x_{1}^{(4)}+(m_{2}k_{1}+k_{2}(m_{1}+m_{2}))\ddot{x_{1}}+k_{1}k_{2}x_{1}=0$
+$m_{1}m_{2}x_{2}^{(4)}+(m_{2}k_{1}+k_{2}(m_{1}+m_{2}))\ddot{x_{2}}+k_{1}k_{2}x_{2}=0$
+\end{center}
+\subsubsection{Algunos ejemplos con masas idénticas}
+Considerando un sistema normalizado con masas iguales, esto es $m_{1}=m_{2}=1$, y asumiendo que no hay fricción ni fuerzas externas, la ecuación diferencial se reduce a:
+\begin{center}
+$m^{(4)}+(k_{1}+2k_{2})m^{2}+k_{1}k_{2}=0$
+\end{center}
+\textbf{Ejemplo 2.1}:\textsl{Describe el movimiento para resortes con constantes $k_{1}=6$ y $k_{2}=4$ con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(1,0,2,0).}
+
+Resolviendo analíticamente encontramos que las soluciones para $x_{1}$ y $x_{2}$ son:
+\begin{center}
+$x_{1}(t)=\cos{\sqrt{2}t}$ \\
+$x_{2}(t)=2\cos{\sqrt{2}t}$
+\end{center}
+
+El movimiento es sincronizado y las ondas se mueven fase una con la otra, teniendo el mismo periodo de movimiento pero con distintas amplitudes. Como el movimiento es periódico simple, las fases de $x_{1}$ y $x_{2}$ forman elipses.
+
+A continuación se muestra el procedimiento correspondiente al método numérico utilizado en todos los ejemplos (variando solo las constates indicadas), este se logro utilizando Python, obteniendo los datos y guardándolos en un archivo para después ser utilizados en las gráficas como se ha hecho en prácticas pasadas:
+\begin{center}
+    \includegraphics[width=.8\textwidth]{fun.PNG}
+    \includegraphics[width=.8\textwidth]{Datos1.PNG}
+    \includegraphics[width=1\textwidth]{Grafica1.PNG}
+\end{center}
+Las graficas obtenidas fueron:
+\begin{center}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_1Oscilaciones.png}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_1Recta.png}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_1Velocidad.png}
+\end{center}
+
+Cómo el articulo presenta las soluciones analíticas, es posible calcular el error relativo para la posición de cada masa, obteniendo así las gráficas del error realtivo contra el tiempo:
+\begin{center}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_1Error1.png}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_1Error2.png}
+\end{center}
+
+\textbf{Ejemplo 2.2}:\textsl{Describe el movimiento para resortes con constantes $k_{1}=6$ y $k_{2}=4$ con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(-2,0,1,0).}
+
+Resolviendo analíticamente encontramos que las soluciones para $x_{1}$ y $x_{2}$ son:
+\begin{center}
+$x_{1}(t)=-2\cos{2\sqrt{3}t}$\\
+$x_{2}(t)=\cos{2\sqrt{3}t}$
+\end{center}
+Al igual que el ejemplo anterior tienen el mismo periodo de movimiento y distintas amplitudes, solo que ahora mientras una se mueve en una dirección, la otra lo hace en sentido contrario. Así que realizando los cambios necesarios (como se muestra en la imagen) se obtuvieron las siguientes gráficas:
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Datos2.PNG}
+\end{center}
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_2Oscilaciones.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_2Recta.png}
+\end{center}
+
+Cómo en el ejemplo anterior, el articulo también presenta las soluciones analíticas, por lo que también es posible calcular el error relativo para la posición de cada masa, obteniendo así las gráficas del error relativo contra el tiempo:
+\begin{center}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_2Error1.png}
+    \includegraphics[width=.4\textwidth]{Ejemplo2_2Error2.png}
+\end{center}
+
+\textbf{Ejemplo 2.3}:\textsl{Describe el movimiento para resortes con constantes $k_{1}=0.4$ y $k_{2}=1.808$ con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(1/2,0,-1/2,7/10).}
+
+En este ejemplo se nota como los valores de $k_{1}$ y $k_{2}$ determinan por completo el periodo y las condiciones iniciales solo afectan la amplitud y la fase de las soluciones. Este no cuenta con solución analítica, sin embargo aun se puede resolver con métodos numéricos:
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Datos3.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Oscilaciones1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Oscilaciones2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Oscilaciones.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_3Posiciones.png}
+\end{center}
+\subsubsection{Amortiguamiento}
+EL tipo más común de amortiguamiento es el provocado por la viscosidad, donde la fuerza amortiguadora es proporcional a la velocidad. El amortiguamiento de la primera masa depende solo de su velocidad y no de la velocidad de la segunda masa y viceversa. Para agregar este fenómeno a las ecuaciones, se añaden los términos $-\delta_{1} \dot{x}_{1}$ y $-\delta_{2} \dot{x}_{2}$ a las ecuaciones correspondientes. Asumiendo que $\delta_{1}$ y $\delta_{2}$ son muy pequeños, el sistema queda:
+\begin{center}
+$m_{1}\ddot{x_{1}}=-\delta_{1} \dot{x}_{1}-k_{1}x_{1}-k_{2}(x_{1}-x_{2})$ \\
+$m_{2}\ddot{x_{2}}=-\delta_{2} \dot{x}_{2}-k_{2}(x_{2}-x_{1})$
+\end{center}
+Realizando el mismo proceso para encontrar las nuevas ecuaciones para $x_{1}$ y $x_{2}$ que no dependan una de la otra, obtenemos:
+\begin{center}
+$m_{1}m_{2}x_{2}^{(4)}+(m_{1}\delta_{1}+m_{2}\delta_{2})\dddot{x}_{1}+(m_{2}k_{1}+k_{2}(m_{1}+m_{2}))\ddot{x_{2}}+k_{1}k_{2}x_{2}=0$
+\end{center}
+
+\textbf{Ejemplo 2.4}:\textsl{ Asuma que $m_{1}=m_{2}=1$.Describe el movimiento para resortes con constantes $k_{1}=0.4$ y $k_{2}=1.808$, coeficientes de amortiguamiento $\delta_{1}=0.1$ y $\delta_{2}=0.2$ con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(1,1/2,2,1/2).}
+
+
+Debido al factor de amortiguamiento, la amplitud del movimiento disminuye conforme el tiempo avanza, lo cual se hace notorio en las gráficas de x1 contra tiempo y x2 contra tiempo.
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Datos4.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Oscilaciones1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Oscilaciones2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Oscilaciones.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo2_4Recta.png}
+\end{center}
+
+\subsection{Añadiendo no linealidad}
+Si asumimos que las fuerzas restauradoras son no lineales y tienen la forma $-kx+\mu x^{3}$, entonces las ecuaciones quedan:
+\begin{center}
+$m_{1}\ddot{x_{1}}=-\delta_{1} \dot{x}_{1}-k_{1}x_{1}+\mu_{1} x^{3}_{1}-k_{2}(x_{1}-x_{2})+\mu_{2} (x_{2}-x_{1})^{3}$ \\
+$m_{2}\ddot{x_{2}}=-\delta_{2} \dot{x}_{2}-k_{2}(x_{2}-x_{1})+\mu_{2} (x_{2}-x_{1})^{3}$
+\end{center}
+La solución de este tipo de sistemas es mucho más complicada que la de los sistemas lineales. A continuación se muestran algunos ejemplos.
+
+La función con la que se trabajaba se cambió para considerar el coeficiente no linealidad, quedando:
+
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Fun3.PNG}
+\end{center}
+
+\textbf{Ejemplo 3.1}:\textsl{ Asuma que $m_{1}=m_{2}=1$.Describe el movimiento para resortes con constantes $k_{1}=0.4$ y $k_{2}=1.808$, coeficientes de amortiguamiento $\delta_{1}=0$ y $\delta_{2}=0$, coeficientes de no linealidad $\mu_{1}=-1/6$ y $\mu_{2}=-1/10$, y con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(1,0,-1/2,0).}
+
+Cómo no hay amortiguamiento, el movimiento es oscilatorio y aparenta ser periódico. Por la no linealidad, el movimiento es muy sensible a condiciones iniciales.
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Datos3_1.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Oscilaciones1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Oscilaciones2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Oscilaciones.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_1Posiciones.png}
+\end{center}
+
+\textbf{Ejemplo 3.2}:\textsl{ Asuma que $m_{1}=m_{2}=1$.Describe el movimiento para resortes con constantes $k_{1}=0.4$ y $k_{2}=1.808$, coeficientes de amortiguamiento $\delta_{1}=0$ y $\delta_{2}=0$, coeficientes de no linealidad $\mu_{1}=-1/6$ y $\mu_{2}=-1/10$, y con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(-0.5,1/2,3.001,5.9).}
+\begin{center}
+    \includegraphics[width=.7\textwidth]{Datos3_2.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_2Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_2Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_2Posiciones.png}
+\end{center}
+
+\textbf{Ejemplo 3.2}:\textsl{ Asuma que $m_{1}=m_{2}=1$.Describe el movimiento para resortes con constantes $k_{1}=0.4$ y $k_{2}=1.808$, coeficientes de amortiguamiento $\delta_{1}=0$ y $\delta_{2}=0$, coeficientes de no linealidad $\mu_{1}=-1/6$ y $\mu_{2}=-1/10$, y con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(-0.6,1/2,3.001,5.9).}
+\begin{center}
+    \includegraphics[width=.65\textwidth]{Datos3_3.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_3Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_3Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo3_3Posiciones.png}
+\end{center}
+\subsection{Añadiendo forzamiento}
+Se puede añadir una fuerza externa de una manera muy sencilla al modelo, siendo o no igual para ambas masas. Suponiendo que se aplica una fuerza senoidal con forma $F\cos(wt)$, las ecuaciones quedan:
+\begin{center}
+$m_{1}\ddot{x_{1}}=-\delta_{1} \dot{x}_{1}-k_{1}x_{1}+\mu_{1} x^{3}_{1}-k_{2}(x_{1}-x_{2})+\mu_{2} (x_{2}-x_{1})^{3}+F_{1}\cos(w_{1}t)$ \\
+$m_{2}\ddot{x_{2}}=-\delta_{2} \dot{x}_{2}-k_{2}(x_{2}-x_{1})+\mu_{2} (x_{2}-x_{1})^{3}+F_{2}\cos(w_{2}t)$
+\end{center}
+El rango de movimientos para un sistema no lineal es bastante amplio. Las condiciones para que este movimiento ocurra son muy difíciles de especificar, por lo que se muestra un ejemplo:
+
+\textbf{Ejemplo 4.1}:\textsl{ Asuma que $m_{1}=m_{2}=1$.Describe el movimiento para resortes con constantes $k_{1}=2/5$ y $k_{2}=1$, coeficientes de amortiguamiento $\delta_{1}=1/10$ y $\delta_{2}=1/5$, coeficientes de no linealidad $\mu_{1}=1/6$ y $\mu_{2}=1/10$, fuerzas de amplitud $F_{1}=1/3$ y $F_{2}=1/5$, frecuencias de forzamiento $w_{1}=1$ y $w_{2}=3/5$ y con condiciones iniciales ($x_{1}(0),\dot{x_{1}}(0), x_{2}(0),\dot{x_{2}}(0)$)=(0.7,0,0.1,0).}
+
+
+Cómo hay amortiguamiento, el movimiento es muy inestable para valores pequeños de t, pero conforme t crezca, el movimiento parecera constante. La función a utilizar se cambió a la siguiente:
+\begin{center}
+    \includegraphics[width=.9\textwidth]{Fun4.PNG}
+\end{center}
+\begin{center}
+    \includegraphics[width=1\textwidth]{Datos4_1.PNG}
+\end{center}
+Obteniendo las gráficas:
+\begin{center}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1Velocidad1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1ciclo.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1Velocidad2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1ciclo2.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1Posiciones1.png}
+    \includegraphics[width=.45\textwidth]{Ejemplo4_1Posiciones2.png}
+\end{center}
+
+\section{Conclusión}
+Con esta actividad se completó el resumen de todo el artículo, mostrando en las ultimas secciones movimientos que nunca me había imaginado, pero lo que más me sorprendió fue la gran herramienta que fue Python para resolver los ejemplos que ahí venían.
+
+Aun que incluso se mencionaba que algunos programas numéricos no podrían realizar buenas aproximaciones a los modelos mostrados, las gráficas resultantes fueron idénticas a los del ejemplo.
+
+Y obviamente como en la práctica pasada, el ambiente de Jupyter Lab mejoró bastante la realización de esta actividad.
+\section{Bibliografía}
+\begin{itemize}
+\item H. FAY, T., \& DUNCAN GRAHAM, S. (2003). Coupled spring equations (pp. 65-79). Int. J. Math. Educ. Sci. Technol. Recuperado de \url{http://math.oregonstate.edu/~gibsonn/Teaching/MTH323-010S15/Supplements/coupled_spring.pdf}
+\end{itemize}
+
+\section{Apéndice}
+\begin{enumerate}
+\item ¿Qué más te llama la atención de la actividad completa? ¿Que se te hizo menos interesante?
+
+Lo que más me gustó fue que ahora en lugar de solo modificar las condiciones iniciales, se tuvo que cambiar varias veces la función a utilizar para poder modelar la situación.
+\item ¿De un sistema de masas acopladas como se trabaja en esta actividad, hubieras pensado que abre toda una nueva área de fenómenos no lineales?
+
+Sabía que habían algunos fenómenos interesantes, pero nunca los había trabajado ya que en otros cursos se despreciaban los coeficientes que provocaban estos fenómenos.
+
+\item ¿Qué propondrías para mejorar esta actividad? ¿Te ha parecido interesante este reto?
+Me parece que está muy bien así, ya que relacionamos temas de otras materias con la programación, encontrando nuevos métodos par abordar los problemas.
+
+\item ¿Quisieras estudiar mas este tipo de fenómenos no lineales?
+Sí, por que en otros cursos no tenemos las herramientas para poder profundizar en el tema.
+
+\end{enumerate}
+\end{document}
